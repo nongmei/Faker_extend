@@ -3,12 +3,17 @@
 
 # 安装方法
 安装redis
-```pip install redis```
+```
+pip install redis
+```
 安装faker
-`pip install faker`
+```
+pip install faker
+```
 将providers文件夹下的内容拷贝到faker所在路径下的providers目录下
 
 # 使用方法
+```
 from faker import Faker
 fake = Faker('zh_CN')
 c = fake.client()
@@ -35,3 +40,4 @@ u'card_type': u'\u501f\u8bb0\u5361',                                        #银
 u'card_name': u'\u8054\u540dIC\u5361\u767d\u91d1\u5361',                    #银行卡名称
 u'card_number': u'6200850731104341483'                                      #银行卡号
 } 
+```
