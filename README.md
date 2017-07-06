@@ -3,7 +3,7 @@
 
 # 安装方法
 安装redis
-`pip install redis`
+```pip install redis```
 安装faker
 `pip install faker`
 将providers文件夹下的内容拷贝到faker所在路径下的providers目录下
