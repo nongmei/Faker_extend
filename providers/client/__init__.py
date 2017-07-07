@@ -1,6 +1,7 @@
 # coding=utf-8
 
 from .. import BaseProvider
+from faker.generator import random
 import itertools
 
 
@@ -42,10 +43,11 @@ class Provider(BaseProvider):
             fields = []
 
         d = {
+            "custId": self.cust_id(),
             "job": self.generator.job(),
             "company": self.generator.company(),
             "residence": self.generator.address(),
-            "current_location": (self.generator.latitude(), self.generator.longitude()),
+            # "current_location": (self.generator.latitude(), self.generator.longitude()),
             "phone_number": self.generator.phone_number(),
             # "card_number": self.generator.bank_card_info()
         }
@@ -59,3 +61,7 @@ class Provider(BaseProvider):
             d = dict((k, v) for (k, v) in d.items() if k in fields)
 
         return d
+
+    def cust_id(self):
+        id = int(random.uniform(1000000, 9999999))
+        return str(id)
