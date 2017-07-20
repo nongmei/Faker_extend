@@ -23,14 +23,14 @@ class Provider(BaseProvider):
 
     @classmethod
     def _get_check_code(cls, number):
-        multi_list =  [ 7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10 ,5 ,8 ,4 ,2]
-        check_list = [ '1', '0', 'X', '9', '8', '7', '6', '5', '4', '3', '2']
+        multi_list = [ 7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10, 5, 8, 4, 2]
+        check_list = ['1', '0', 'X', '9', '8', '7', '6', '5', '4', '3', '2']
         sum = 0
         i = 0
         for n in list(number):
             sum += int(n)*multi_list[i]
             i += 1
-        return  check_list[sum%11]
+        return check_list[sum%11]
 
     @classmethod
     def _get_order_code(cls, sex):

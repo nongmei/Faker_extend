@@ -4,12 +4,12 @@ from collections import OrderedDict
 
 from faker.providers.date_time import Provider as DateTimeProvider
 from .. import BaseProvider
-import redis
 
+localized = True
 
 class CreditCard(object):
 
-    def __init__(self, name, prefixes, length=19, security_code='CVC', security_code_length=3):
+    def __init__(self, name, prefixes, length=16, security_code='CVC', security_code_length=3):
         self.name = name
         self.prefixes = prefixes
         self.length = length
@@ -18,11 +18,6 @@ class CreditCard(object):
 
 
 class Provider(BaseProvider):
-
-    card_prefix = ['999999', '621222', '623021', '623022', '622630', '622633', '690755', '95555', '402658', '410062',
-                   '468203', '512425', '622580', '622588', '622598', '690755', '623126', '623262', '303', '622662',
-                   '622664', '622667', '622670', '622672', '622668', '622661', '622673', '620518', '621492', '620535',
-                   '621490', '620085', '623155', '623157', '623158', '623253']
 
     prefix_maestro = ['5018', '5020', '5038', '5612', '5893', '6304', '6759', '6761', '6762', '6763', '0604', '6390']
     prefix_mastercard = ['51', '52', '53', '54', '55']
@@ -33,6 +28,10 @@ class Provider(BaseProvider):
     prefix_jcb16 = ['3088', '3096', '3112', '3158', '3337', '3528']
     prefix_jcb15 = ['2100', '1800']
     prefix_voyager = ['8699']
+    # 大陆银行卡
+    prefix_icbc = ['6245806', '6253098']
+    prefix_abc = ['625826']
+    prefix_ccb = ['553242', '5544033', '5491031', '5453242']
 
     credit_card_types = OrderedDict((
         ('maestro',      CreditCard('Maestro',           prefix_maestro, 12, security_code='CVV')),
@@ -45,6 +44,9 @@ class Provider(BaseProvider):
         ('jcb15',        CreditCard('JCB 15 digit',      prefix_jcb15, 15)),
         ('jcb16',        CreditCard('JCB 16 digit',      prefix_jcb16)),
         ('voyager',      CreditCard('Voyager',           prefix_voyager, 15)),
+        ('工商银行',     CreditCard('牡丹信用卡',        prefix_icbc, 16)),
+        ('建设银行',     CreditCard('龙卡信用卡',        prefix_ccb, 16)),
+        ('农业银行',     CreditCard('IC普卡',            prefix_abc, 16)),
     ))
     credit_card_types['visa'] = credit_card_types['visa16']
     credit_card_types['jcb'] = credit_card_types['jcb16']
@@ -60,29 +62,12 @@ class Provider(BaseProvider):
         return cls._credit_card_type(card_type).name
 
     @classmethod
-    def _bank_card_number(cls, prefix=None):
+    def credit_card_number(cls, card_type=None):
         """ Returns a valid credit card number. """
-        if prefix is None:
-            prefix = cls.random_element(cls.card_prefix)
-        number = cls._generate_number(prefix, 19)
+        card = cls._credit_card_type(card_type)
+        prefix = cls.random_element(card.prefixes)
+        number = cls._generate_number(prefix, card.length)
         return number
-
-    @classmethod
-    def bank_card_info(cls):
-        """ Returns a dict that contains bank card info.        """
-        prefix = cls.random_element(cls.card_prefix)
-        bank_card_number = cls._bank_card_number()
-        r = redis.StrictRedis(host='10.12.9.14', port=6379, db=0)
-        info = r.get(prefix+"CORE_CARD_BIN")
-        if info is not None:
-            names = ['bank_name', 'bank_code', 'card_name', 'card_bin', 'card_type']
-            values = info.decode('utf-8').split('|')
-            card_info = dict(zip(names, values))
-            card_info['card_number'] = bank_card_number
-        else:
-            print "Redis中没有找到该卡的属性:%s" % prefix
-            raise Exception
-        return  card_info
 
     @classmethod
     def credit_card_expire(cls, start='now', end='+10y', date_format='%m/%y'):

@@ -53,7 +53,9 @@ class Provider(BaseProvider):
         }
 
         d = dict(d, **self.generator.simple_profile(sex))
-        d = dict(d, **self.generator.bank_card_info())
+        # d = dict(d, **self.generator.bank_card_info())
+        d['bank_name'] = self.generator.debit_card_provider()
+        d['card_number'] = self.generator.debit_card_number(d['bank_name'])
         id_number = self.generator.id_number(d['sex'])
         d['id_number'] = id_number
         #field selection
