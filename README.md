@@ -2,17 +2,14 @@
 扩展Python Faker库，添加client provider，生成客户身份证号、银行卡等信息
 
 # 安装方法
-安装redis
-```
-pip install redis
-```
 安装faker
 ```
 pip install faker
 ```
-将providers文件夹下的内容拷贝到faker所在路径下的providers目录下
+将providers文件夹下的内容拷贝到faker所在路径下的providers目录下，覆盖已有文件
 
 # 使用方法
+生成客户信息
 ```
 from faker import Faker
 fake = Faker('zh_CN')
@@ -40,4 +37,11 @@ u'card_type': u'\u501f\u8bb0\u5361',                                        #银
 u'card_name': u'\u8054\u540dIC\u5361\u767d\u91d1\u5361',                    #银行卡名称
 u'card_number': u'6200850731104341483'                                      #银行卡号
 } 
+
+```
+生成银行卡信息
+```
+print fake.debit_card_full()
+print fake.debit_card_number()
+
 ```
